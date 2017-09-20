@@ -8,7 +8,7 @@ if(isset($_POST["Import"]))
 	$stdnt_class =$_POST['stdnt_class'];
 	$section_id =$_POST['section_id'];
 	$stdnt_medium =$_POST['stdnt_medium'];
-	$notification_key='AAAArt9gILg:APA91bFwFhemkzYV7Sq83t7zvpLC8QY27DC__xWUFIbI1GefXTDD0_4S8hOuOJ88q0oZ3gmWjshoRSwU08xqcWTb1a1PofkKp52nUdN9tB-voht0KhDW4O4Ch39ycj0VNogAuYRj29dN';
+	$notification_key='AAAAJs4r62Q:APA91bHtzaHry7Y63No5sTrsD09dl7Bu5Xj3ZuVxmY614VKvtA6a4eOKz6sydOzWZDAfLgAbqld1OkiuGA7o-ex_hnEUDNg2CWNZOUbkJDMYv5kJ-Q6816vOrtLAkDvZP3U_WizaqUql';
 		$filename=$_FILES["file"]["tmp_name"];
 		$file_name=$_FILES["file"]["name"];
 		$ext = explode(".", $file_name);
@@ -24,23 +24,40 @@ if(isset($_POST["Import"]))
 		else
 		{
 	$file = fopen($filename, "r");
-		$x=0;
+		$x=0;   $a=0;
 		 while (($emapData = fgetcsv($file, 10000, ",")) !== FALSE)
 		 {
-			@$a++;
-			$x++;
-			if($x==1){continue;}
+			
+			$a++;
+			
 			$sql=mysql_query("select * from `login` order by id DESC limit 1 ");
 			$fet=mysql_fetch_array($sql);
+			
 			$last_id_fet=$fet['id'];
+			$last_schollor=$fet['eno'];
 			$reg_no=$fet['reg_no'];
 			$add_id =$reg_no+1;
+			
 			$password=md5($emapData[11]);
-			$sql = "INSERT into login (`name`,`dob`,`father_name`,`mother_name`,`address`,`roll_no`,`eno`,`mobile_no`,`father_mobile`,`mother_mobile` ,`username`,`password`,`class_id`,`section_id`,`medium`,`reg_no`,`user_id`,`role_id`,'notification_key') 
-			values('$emapData[0]','$emapData[1]','$emapData[2]','$emapData[3]','$emapData[4]','$emapData[5]','$emapData[6]','$emapData[7]','$emapData[8]','$emapData[9]','$emapData[10]','$password','$stdnt_class ','$section_id','$stdnt_medium','$add_id','1','5','$notification_key')";
-			$result = mysql_query($sql);
-		
-		}
+			//print_r($emapData[0]);
+			if($x>0){
+				
+				if($last_schollor==$emapData[6]){
+					
+				$sql = "UPDATE login SET name='$emapData[0]',dob='$emapData[1]',father_name='$emapData[2]',mother_name='$emapData[3]',address='$emapData[4]',roll_no='$emapData[5]',eno='$emapData[6]',mobile_no='$emapData[7]',father_mobile='$emapData[8]',mother_mobile='$emapData[9]',username='$emapData[10]',password='$password',class_id='$stdnt_class',section_id='$section_id',medium='$stdnt_medium',reg_no='$add_id',user_id='1',role_id='5',notification_key='$notification_key' 
+				WHERE eno='$emapData[6]'";
+				$result = mysql_query($sql);
+				}else{
+				echo   $sql = "INSERT into login (name,dob,father_name,mother_name,address,roll_no,eno,mobile_no,father_mobile,mother_mobile,username,password,class_id,section_id,medium,reg_no,user_id,role_id,notification_key) 
+				values('$emapData[0]','$emapData[1]','$emapData[2]','$emapData[3]','$emapData[4]','$emapData[5]','$emapData[6]','$emapData[7]','$emapData[8]','$emapData[9]','$emapData[10]','$password','$stdnt_class ','$section_id','$stdnt_medium','$add_id','1','5','$notification_key')";
+				$result = mysql_query($sql);
+				}
+				
+			}
+			$x++;
+			
+			
+		 }
 			$total_entries= $a-1;	
 			echo "<script type=\"text/javascript\">
 			alert('Total $total_entries entries Insert Successfull');
