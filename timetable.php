@@ -118,21 +118,18 @@ if(isset($_POST['submit']))
 </body>
 <?php footer(); ?>
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-
 <script>
 <?php if($insert_id>0){ ?>
 var update_id = <?php echo $insert_id; ?>;
-		$.ajax({
-			url: "notification_page.php?function_name=create_timetable_notify&id="+update_id,
-			type: "POST",
-			success: function(data)
-			{
- 			}
-		});
+	$.ajax({
+		url: "notification_page.php?function_name=create_timetable_notify&id="+update_id,
+		type: "POST",
+		success: function(data)
+		{
+		}
+	});
 <?php } ?>
 $(document).ready(function() {
-
-
 $(".chk_input").live("click",function(){
 
 var attr_val= $(this).attr('chk_val');			   

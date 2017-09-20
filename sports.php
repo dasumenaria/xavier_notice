@@ -180,9 +180,9 @@ if(isset($_POST['submit']))
     </table>
 	</div>
                                              
-			
-			</div>
+</div>
 </body>
+<?php footer();?>
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script>
  
@@ -206,6 +206,6 @@ $(document).ready(function(){
 	} 
 </script>
 
-<?php footer();?>
+
 <?php scripts();?>
 

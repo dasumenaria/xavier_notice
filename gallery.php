@@ -304,7 +304,6 @@ if(isset($_POST['submit']))
 </body>
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script>
-
 <?php if($insert_id>0){ ?>
 	var update_id = <?php echo $insert_id; ?>;
  		$.ajax({
@@ -334,13 +333,6 @@ $(document).ready(function(){
         });
 	});	
 </script>
-		
-		
-		
-		
-	});	
-</script>
- 
 <script>
     function add_row(){  
         var new_line=$("#sample tbody").html();
