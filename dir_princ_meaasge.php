@@ -383,16 +383,11 @@ span {
 		});
 	 
 <?php }?>
-
-
-
 	var myVar=setInterval(function(){myTimerr()},4000);
 	function myTimerr() 
 	{
 		$("#success").hide();
 	}
- 	
-	
- </script>
+</script>
  <?php scripts();?>
 </html>

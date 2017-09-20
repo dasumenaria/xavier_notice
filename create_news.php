@@ -150,7 +150,6 @@ if(isset($_POST['submit']))
 </body>
 <?php footer(); ?>
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-
 <script>
 <?php if($newsid>0){ ?>
 var update_id = <?php echo $newsid; ?>;

@@ -247,7 +247,6 @@ $curent_date=date("Y-m-d");
 </body>
 <?php footer(); ?>
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-
 <script>
 <?php if($insert_id>0){ ?>
 var update_id = <?php echo $insert_id; ?>;

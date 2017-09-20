@@ -186,7 +186,6 @@ include("database.php");
 			</div></div>
 </body>
 <?php footer();?>
-
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script>
 <?php if($update_id>0){?>
