@@ -30,11 +30,11 @@ if(isset($_POST["Import"]))
 			@$a++;
 			$x++;
 			if($x==1){continue;}
-$sql=mysql_query("select * from `login` order by id DESC limit 1 ");
-$fet=mysql_fetch_array($sql);
-$last_id_fet=$fet['id'];
-$reg_no=$fet['reg_no'];
-$add_id =$reg_no+1;
+			$sql=mysql_query("select * from `login` order by id DESC limit 1 ");
+			$fet=mysql_fetch_array($sql);
+			$last_id_fet=$fet['id'];
+			$reg_no=$fet['reg_no'];
+			$add_id =$reg_no+1;
 			$password=md5($emapData[11]);
 			$sql = "INSERT into login (`name`,`dob`,`father_name`,`mother_name`,`address`,`roll_no`,`eno`,`mobile_no`,`father_mobile`,`mother_mobile` ,`username`,`password`,`class_id`,`section_id`,`medium`,`reg_no`,`user_id`,`role_id`,'notification_key') 
 			values('$emapData[0]','$emapData[1]','$emapData[2]','$emapData[3]','$emapData[4]','$emapData[5]','$emapData[6]','$emapData[7]','$emapData[8]','$emapData[9]','$emapData[10]','$password','$stdnt_class ','$section_id','$stdnt_medium','$add_id','1','5','$notification_key')";
