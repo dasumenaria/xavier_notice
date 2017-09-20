@@ -20,23 +20,20 @@ if(isset($_POST['submit']))
 				$n_name='event';
 				$folderName2=$n_name.$e_id;
 					$gallery_pic=array_filter($_FILES["gallery_pic"]["tmp_name"]);
-					
-					$o=sizeof($gallery_pic);  
 					$gp=0;
+					$o=sizeof($gallery_pic);  
+
 					for($j=0; $j<$o; $j++)
 					{
-					
-						
 						$rnd=rand(100, 10000);
 						$random=$rnd.$e_id;
-						  
-						$gp=$gallery_pic[$j];
+					    $gp=$gallery_pic[$j];
 						$photo1="event".$random.".jpg";
 						move_uploaded_file( $gp,"event/".$folderName2."/".$photo1);
 						$sql1="insert into sub_gallery(gallery_id,gallery_pic)values('$e_id','$photo1')"; 
 						$rl=mysql_query($sql1);
 						 
-					}	
+					}
 		}
 		else
 		{
