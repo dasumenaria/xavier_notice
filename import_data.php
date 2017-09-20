@@ -42,13 +42,16 @@ if(isset($_POST["Import"]))
 			//print_r($emapData[0]);
 			if($x>0){
 				
-				if($last_schollor==$emapData[6]){
-					
-				$sql = "UPDATE login SET name='$emapData[0]',dob='$emapData[1]',father_name='$emapData[2]',mother_name='$emapData[3]',address='$emapData[4]',roll_no='$emapData[5]',eno='$emapData[6]',mobile_no='$emapData[7]',father_mobile='$emapData[8]',mother_mobile='$emapData[9]',username='$emapData[10]',password='$password',class_id='$stdnt_class',section_id='$section_id',medium='$stdnt_medium',reg_no='$add_id',user_id='1',role_id='5',notification_key='$notification_key' 
-				WHERE eno='$emapData[6]'";
-				$result = mysql_query($sql);
-				}else{
-				echo   $sql = "INSERT into login (name,dob,father_name,mother_name,address,roll_no,eno,mobile_no,father_mobile,mother_mobile,username,password,class_id,section_id,medium,reg_no,user_id,role_id,notification_key) 
+			$sql1=mysql_query("select * from `login` where eno='$emapData[6]' ");
+			$fet1=mysql_fetch_array($sql1);	
+				if($fet1> 0)
+				 {
+     				$sql = "UPDATE login SET name='$emapData[0]',dob='$emapData[1]',father_name='$emapData[2]',mother_name='$emapData[3]',address='$emapData[4]',roll_no='$emapData[5]',eno='$emapData[6]',mobile_no='$emapData[7]',father_mobile='$emapData[8]',mother_mobile='$emapData[9]',username='$emapData[10]',password='$password',class_id='$stdnt_class',section_id='$section_id',medium='$stdnt_medium',reg_no='$add_id',user_id='1',role_id='5',notification_key='$notification_key' 
+				     WHERE eno='$emapData[6]'";
+				$result = mysql_query($sql); 
+				 }
+				else{
+				  $sql = "INSERT into login (name,dob,father_name,mother_name,address,roll_no,eno,mobile_no,father_mobile,mother_mobile,username,password,class_id,section_id,medium,reg_no,user_id,role_id,notification_key) 
 				values('$emapData[0]','$emapData[1]','$emapData[2]','$emapData[3]','$emapData[4]','$emapData[5]','$emapData[6]','$emapData[7]','$emapData[8]','$emapData[9]','$emapData[10]','$password','$stdnt_class ','$section_id','$stdnt_medium','$add_id','1','5','$notification_key')";
 				$result = mysql_query($sql);
 				}
@@ -58,6 +61,7 @@ if(isset($_POST["Import"]))
 			
 			
 		 }
+		 
 			$total_entries= $a-1;	
 			echo "<script type=\"text/javascript\">
 			alert('Total $total_entries entries Insert Successfull');
