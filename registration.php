@@ -102,7 +102,7 @@ if(isset($_POST['submit']))
 											<!-- PERSONAL INFO TAB -->
 											<div class="tab-pane active" id="tab_1_1">
                                             <input type="hidden" name='edit_id' class="form-control" value="<?php echo $get_id;?>" >	
-												<form class="form-horizontal" role="form" id="noticeform" method="post" enctype="multipart/form-data">
+												<form class="form-horizontal checkformsubmit" role="form" id="noticeform" method="post" enctype="multipart/form-data">
                                                     <div class="row">
 													 <div class="col-sm-4"><div class="form-group">
                                                     <label class="control-label">Role</label>
@@ -123,9 +123,10 @@ if(isset($_POST['submit']))
                                                     
                                                     
                                                     <div class="col-sm-4"><div class="form-group">
-                                                    <label class="control-label">Scholler Number </label>
-                                                    <input type="text" placeholder="Enrollment Number" name="eno" required class="form-control" value=""/>
-                                                    </div>
+                                                    <label class="control-label">Scholler Number  </label>
+                                                    <input type="text" placeholder="Enrollment Number" name="eno" required class="form-control   scholrcheck" onblur="checjkscholor();" value=""/>
+                                                    
+													</div>
                                                     </div>
 													
 													 <div class="col-sm-2"><div class="form-group">
@@ -276,7 +277,7 @@ if(isset($_POST['submit']))
 						</div>
 						</div>
                                                     <div class="col-sm-12"><div class=" right1" align="right" style="margin-right:10px">
-                                                        <button type="submit" class="btn green" name="submit">Submit</button>
+                                                        <button type="submit" class="btn green" onblur="checjkscholor();" name="submit">Submit</button>
                                                     </div></div>
                                                    </div> 
                                                     
@@ -295,12 +296,46 @@ if(isset($_POST['submit']))
 </body>
 
 <?php footer();?>
-<script>
+<script type="text/javascript">
+
+
+  function checjkscholor(){  
+            var scholrcheck = $('.scholrcheck').val();
+			var url="check_scollor.php?scholrcheck=";
+			url=url+scholrcheck,
+			
+			$.ajax({ 
+				url: url,
+				type: 'GET',
+			}).done(function(response) 
+			{
+				if(response==1){
+					//$('#msg').html('Schollor No. Already Define.');
+					alert('Schollor Number Already Define.');
+					$('.scholrcheck').val("");
+				}else{
+					//$('#msg').html('Schollor No. Not Define.');
+					alert('Schollor Number Not Define.');
+					$('.scholrcheck').val("");
+				}
+			});		
+			}; 
+		
+		
+
+		
+		
+		
+		
+
 var myVar=setInterval(function(){myTimerr()},4000);
-function myTimerr() 
-{
-	$("#success").hide();
-} 
+
+	function myTimerr() 
+	{
+		 
+		
+		$("#success").hide();
+	} 
 </script>
 <?php scripts();?>
 
