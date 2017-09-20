@@ -29,9 +29,9 @@ if($function_name=='principle_director_message')
 				
 			}
 			if($send=='1')
-			{
-				//--
+			{   
 				$std_nm = mysql_query("SELECT `device_token`,`notification_key`,`role_id`,`id` FROM `faculty_login` where role_id='4' && device_token != ''");
+			
 				while($ftc_nm= mysql_fetch_array($std_nm))
 				{
 					$device_token = $ftc_nm['device_token'];
@@ -64,6 +64,7 @@ if($function_name=='principle_director_message')
 						);
 						$link='notice://'.$link.'?id='.$up_id;
 							//--- NOTIFICATIO INSERT
+							
 					$NOTY_insert = mysql_query("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES('$title','$message','$user_id','$submitted_by','$date','$time','$role_id','$link')");
 							//-- END
 								json_encode($fields);
@@ -78,7 +79,8 @@ if($function_name=='principle_director_message')
 								$result = curl_exec($ch);
 								curl_close($ch);
 						//--	
-					}
+					
+					}exit;
 					//---  Student
 					$std_nm1 = mysql_query("SELECT `device_token`,`notification_key`,`role_id`,`id` FROM `login` where role_id='5' && device_token != '' "); 
 					while($ftc_nm1= mysql_fetch_array($std_nm1))

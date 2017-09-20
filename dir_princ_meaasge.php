@@ -370,7 +370,7 @@ span {
 </body>
  
 <?php footer();?>
-
+<script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script>
 <?php if($update_id>0){?>
 		var update_id = <?php echo $update_id; ?>;
