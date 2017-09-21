@@ -236,88 +236,26 @@ if(isset($_POST['submit']))
 												</div>												 
 											</div>
 										</div>
-										</div>
-										<div class="row">
-										<div class="col-md-6">
-										 <div id="data">
-												<div class="form-group">
-												<label class="col-md-3 control-label">Subject</label>
-												<div class="col-md-3">
-													<select name="subject_id" class="form-control select2me input-medium" placeholder="Select Subject" >
-													<option value=""></option>
-													 </select>
-												</div>												 
-												</div>
-											</div>
-										</div>
-										<div class="col-md-6">
+										<div class="col-md-offset-6 col-md-5">
 											<div class="form-group">
-												<label class="col-md-3 control-label">Topic</label>
-												<div class="col-md-3">
-												<input class="form-control input-medium " required  value="" placeholder="Enter Topic" type="text" name="topic">
-												</div>
-
-											</div> 
-										</div>
-										</div>
-									 
-									 <div class="row">
-										<div class="col-md-6">
-											<label class="col-md-3 control-label" align="center">Date</label>
-											<div class="col-md-3">
-											<input class="form-control form-control-inline input-medium date-picker" required  value="" placeholder="dd/mm/yyyy" type="text" data-date-format="dd-mm-yyyy"  name="submission_date">
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="form-group">
-												<label class="control-label col-md-3">Image</label>
-												<div class=" col-md-6 fileinput fileinput-new" style="padding-left: 15px;" data-provides="fileinput">
-												<input type="file" class="form-control" name="file" id="file1">
-											</div>
+											  <a class="btn btn-xs btn-default addrow" style="float: right;" href="#" role="button">
+											  <i class="fa fa-plus"></i> Add row</a>
 											</div>
 										</div>
 									</div>
-								<div class="row">
-                                	<div class="col-md-6 ifYes" style="display:none">
-										 
-											<div class="form-group">
-													<label class=" col-md-3 control-label">Select Student </label>
-												<div class="col-md-3">
-													<select name="student_id[]" class="form-control select2me input-medium"   multiple='multiple' placeholder="Select...">
-													<option value=""></option>
-														<?php
-														$r1=mysql_query("select `name`,`id` from login where `flag`=0  order by id ASC");		
-														$i=0;
-														while($row1=mysql_fetch_array($r1))
-														{
-															$id=$row1['id'];
-															$name=$row1['name'];
-														?>
-															<option value="<?php echo $id;?>"><?php echo $name;?></option>                              
-													<?php }?> 
-													</select>
-												</div>
-											</div>
-										 
-                                    </div>
-										<div class="col-md-6">
-											<label class="col-md-3 control-label" align="center">Discription</label>
-											<div class="col-md-3">
-											<textarea class="form-control input-medium" rows="1" required placeholder="Discription" type="text" name="description"></textarea>										 	
-											</div>
+
+									
+										<div id="other_filds">
 										</div>
-									</div>									
+									
+										
 								 <div  align="center">
 									<input  type="submit" class="btn green" name="submit"  value="Submit">
-						</div> 
+								</div> 
 								</div>
 							</form>
 						</div>
 					</div>
-					
- 
- 		
-
 </div></div>
 </body>
 
@@ -361,16 +299,159 @@ $(document).ready(function() {
 		});
 	 
 	});	  
+	
+	$("#cls_id").live("change",function(){
+		classChnage();
+	});
 
+	$("#sec_id").live("change",function(){ 
+		classSectionChnage();
+	});	
+	
+	
+	function classChnage()
+	{
+		var class_id=$("#cls_id").val();
+		if(class_id != '')
+		{		
+			$.ajax({
+			url: "ajax_homework_student_list.php?class_id="+class_id,
+			}).done(function(response) {
+			 $("#studentlist").html(""+response+"");
+			 $("#student_data").select2();
+			});
+		}
+	}
+	
+	function classSectionChnage()
+	{
+		var class_id=$("#cls_id").val();
+		var section_id=$("#sec_id").val();
+		if(class_id != '' && section_id != '')
+		{		
+			$.ajax({
+			url: "ajax_homework_student_list.php?class_id="+class_id+"&section_id="+section_id,
+			}).done(function(response) { 
+			 $("#studentlist").html(""+response+"");
+			 $("#student_data").select2();
+			});
+		}
+	}
+	
+	
+		$('.addrow').live("click",function() {
+		add_row();
+	});
+	add_row();
+	function add_row(){
+		var tr=$("#allfields").clone();
+		$("#other_filds").append(tr);
+		classChnage();
+		classSectionChnage();
+	}
+
+	$('.deleterow').live("click",function() {
+		$(this).closest("#childfields").remove();
+	});	
+	
+	renameRows()
+	{
+		var i=0;
+		$("#allfields").each(function(){
+			
+		});
+	}
+	
 });
 
  </script> 
  
- 
-
- 
-			
  <?php scripts();?>
 
+ 
+ <div id="allfields">
+	<div id="childfields" class="row form-group "> 
+  				<div class="row">
+				<div class="col-md-12 form-group ">
+				<a class="btn btn-xs btn-default deleterow red" style="float: right;margin-right:79px;" href="#" role="button">
+					<i class="fa fa-times"></i>  Remove Row </a>
+				</div>
+				<div class="col-md-6">
+				 <div id="data">
+						<div class="form-group">
+						<label class="col-md-3 control-label">Subject</label>
+						<div class="col-md-3">
+							<select name="subject_id[]" class="form-control select2me input-medium" placeholder="Select Subject" >
+							<option value=""></option>
+							 </select>
+						</div>												 
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="col-md-3 control-label">Topic</label>
+						<div class="col-md-3">
+						<input class="form-control input-medium " required  value="" placeholder="Enter Topic" type="text" name="topic[]">
+						</div>
+							
+					</div> 
+				</div>
+				</div>
+									 
+			 <div class="row">
+				<div class="col-md-6">
+					<label class="col-md-3 control-label" align="center">Date</label>
+					<div class="col-md-3">
+					<input class="form-control form-control-inline input-medium date-picker" required  value="" placeholder="dd/mm/yyyy" type="text" data-date-format="dd-mm-yyyy"  name="submission_date[]">
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label col-md-3">Image</label>
+						<div class=" col-md-6 fileinput fileinput-new" style="padding-left: 15px;" data-provides="fileinput">
+						<input type="file" class="form-control" name="file[]" id="file1">
+					</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 ifYes" style="display:none">
+					 
+						<div class="form-group">
+								<label class=" col-md-3 control-label">Select Student </label>
+							<div class="col-md-3" id="studentlist" >
+							<select name="student_id[]" class="form-control select2me input-medium" multiple='multiple' placeholder="Select..." id="student_data" >
+								<option value=""></option>
+									<?php
+										$r1=mysql_query("select `name`,`id` from login where `flag`=0 order by id ASC");		
+										$i=0;
+										while($row1=mysql_fetch_array($r1))
+										{
+											$id=$row1['id'];
+											$name=$row1['name'];
+										?>
+											<option value="<?php echo $id;?>">
+												<?php echo $name;?>
+											</option>                              
+								<?php }?> 
+							</select>
+							</div>
+						</div>
+					 
+				</div>
+					<div class="col-md-6">
+						<label class="col-md-3 control-label" align="center">Discription</label>
+						<div class="col-md-3">
+						<textarea class="form-control input-medium" rows="1" required placeholder="Discription" type="text" name="description[]"></textarea>										 	
+						</div>
+					</div>
+				</div>	
+ 
+ </div>
+ </div> 
+ 
+ 
+ 
 </html>
 
