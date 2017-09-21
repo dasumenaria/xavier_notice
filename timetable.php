@@ -11,15 +11,19 @@ if(isset($_POST['submit']))
 	$section_id=$_REQUEST["section_id"];
 	$subject_id=$_REQUEST["subject_id"];
 	$time_from=$_REQUEST["time_from"];
+	$day=$_REQUEST["day"];
 	$time_to=$_REQUEST["time_to"]; 
 	$teacher_name=$_REQUEST["teacher_name"]; 
 	$period=$_REQUEST["period"]; 
 	$date_current=date('Y-m-d');
 	$i=0;
 	
+	
 	 foreach($subject_id as $value)
 	 {
+		echo $day;
 		 $t_f=$time_from[$i];
+		
 	 	 $subject_id=$value;
 		 $t_t=$time_to[$i];
 		 $TN=$teacher_name[$i];
@@ -33,19 +37,19 @@ if(isset($_POST['submit']))
 		{	
 			$ftc=mysql_fetch_array($f);
 			$insert_id=$ftc['id']; 
-			$sql1="update `time_table` SET `user_id`='$session_id',`class_id`='$class_id',`section_id`='$section_id',`subject_id`='$subject_id',`time_from`='$t_f',`time_to`='$t_t',`curent_date`='$date_current',`teacher_name`='$TN',`period`='$PP' where `id`='".$insert_id."'";
+			$sql1="update `time_table` SET `user_id`='$session_id',`class_id`='$class_id',`day`=$day,`section_id`='$section_id',`subject_id`='$subject_id',`time_from`='$t_f',`time_to`='$t_t',`curent_date`='$date_current',`teacher_name`='$TN',`period`='$PP' where `id`='".$insert_id."'";
 			$r1=mysql_query($sql1);
 		}
 		else
 		{ 
-			$sql="insert into time_table(user_id,class_id,section_id,time_from,time_to,subject_id,curent_date,teacher_name,period)values('$session_id','$class_id','$section_id','$t_f','$t_t','$subject_id','$date_current','$TN','$PP')";
+			$sql="insert into time_table(user_id,class_id,section_id,time_from,time_to,day,subject_id,curent_date,teacher_name,period)values('$session_id','$class_id','$section_id','$t_f','$t_t','$day','$subject_id','$date_current','$TN','$PP')";
 			$r=mysql_query($sql);
 			 
 			$insert_id=mysql_insert_id();
 			$i++;
 		 }
 		 $message='Timetable added successfully';
-	 }
+	 }exit;
 }
 	 
   ?> 

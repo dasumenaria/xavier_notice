@@ -43,6 +43,7 @@ if((!empty($class_id)) && (!empty($sect_id))){
 <div class="portlet-body">
   <table class="table table-striped table-hover" style="text-align:center">
     <tr>
+		<td width="100px">Day</td>
 		<td width="100px">Subject</td>
 		<td width="100px">Teacher Name</td>
 		<td>Period</td>
@@ -52,6 +53,19 @@ if((!empty($class_id)) && (!empty($sect_id))){
 	</tr>
 	 
 	<tr>
+	<td width="250px" align="center">
+		<select class="select2me form-control" name="day[]">
+			<option value="">---Select Day---</option>
+			<option value="Sunday">Sunday</option>
+			<option value="Monday">Monday</option>
+			<option value="Tuesday">Tuesday</option>
+			<option value="Wednesday">Wednesday</option>
+			<option value="Thursday">Thursday</option>
+			<option value="Friday">Friday</option>
+			<option value="Saturday">Saturday</option>
+		</select>
+		  
+	</td>
 	<td width="250px" align="center">
 		 
 		<select class="select2me form-control" name="subject_id[]">
