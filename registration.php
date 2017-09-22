@@ -29,7 +29,7 @@ if(isset($_POST['submit']))
 	$dd=$dobExplode[2];
 	$mm=$dobExplode[1];
 	$yy=$dobExplode[0];
-	$username=strtolower($firstName.$dd.$mm.$yy);
+	$username=strtolower($mobile_no);
 	$password=md5($username);	
 	
 	$fetch_st=mysql_query("select * from login where flag='0' AND eno='$eno'");		
