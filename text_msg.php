@@ -1,5 +1,4 @@
-<?php
-phpinfo(); exit;
+<?php 
 date_default_timezone_set('asia/kolkata');
  include("index_layout.php");
  include("database.php");
@@ -16,7 +15,7 @@ date_default_timezone_set('asia/kolkata');
 		$date_from=date('Y-m-d');
 		if($role_id==1)
 		{
- 			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from' ");
+			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from' ");
 		}
 		if($role_id==2)
 		{
