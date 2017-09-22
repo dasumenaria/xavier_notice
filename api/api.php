@@ -4011,8 +4011,9 @@ $string_insert[$x]['time']=$time;
 						$resultArray['to']=$to_time;
 						$resultArray['exam_day']=$exam_day;
 						$resultArray['room_no']=$room_no;
-						$result[$exam_date]=($resultArray);
-					}
+						$resultArray['exam_date']=date('d-m-Y',strtotime($exam_date));
+						$result[]=$resultArray;
+ 					}
 					$success = array('status'=> true, "Error" => "",'responce' => $result);
 					$this->response($this->json($success), 200);   	
 		} 
