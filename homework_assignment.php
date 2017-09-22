@@ -9,33 +9,21 @@ $date=date('Y-m-d');
 if(isset($_POST['submit']))
 {
 	$data_arrs = $_POST;
-	echo "<pre>";
-		print_r($data_arrs);
-	echo "</pre>";	
-	
-	$i=0;
 	foreach($data_arrs['assignment'] as $key => $data_arr)
 	{
 
-			foreach ($_FILES['file']['error'] as  $error) {
-				  echo $_FILES['file']['name'][$key].'<br>';
-			}
-
-		$i++;
-	}
-		
-	exit;
-
-	
-	$class_id=$_POST["class_id"];
-	$section_id=$_POST["section_id"];
-	$subject_id=$_POST["subject_id"];				
-	$yesno=$_POST["yesno"];				
-	$topic=$_POST["topic"];
-	$submission_date=$_POST["submission_date"];
+		foreach($_FILES['file']['error'] as $k=>  $error) {
+			$data_arr['file'] = $_FILES['file']['name'][$key];
+		}
+	$class_id=$data_arrs["class_id"];
+	$section_id=$data_arrs["section_id"];
+	$subject_id=$data_arr["subject_id"];				
+	$yesno=$data_arrs["yesno"];				
+	$topic=$data_arr["topic"];
+	$submission_date=$data_arr["submission_date"];
 	$sub_date=date('Y-m-d',strtotime($submission_date));
-	$description=$_POST["description"];
-	$student_id=$_POST["student_id"]; 
+	$description=$data_arr['description'];
+	$student_id = $data_arr['student_id'];
 
 	if($yesno=='1')
 	{
@@ -180,6 +168,7 @@ if(isset($_POST['submit']))
 		}	
 	}
 
+	}
 }
 		
 		
@@ -263,7 +252,7 @@ if(isset($_POST['submit']))
 									</div>
 
 									
-										<table id="other_filds" border="1">
+										<table id="other_filds" style="margin-left: 70px;" border="1">
 											<thead>
 												<tr>
 													<th>Subject<br/>Image</th>
@@ -362,8 +351,7 @@ $(document).ready(function() {
 			$.ajax({
 			url: "ajax_homework_student_list.php?class_id="+class_id,
 			}).done(function(response) {
-			 $('div.childfields:last-child').find('.studentlist').html(response);
-			 $('div.childfields:last-child').find(".student_data").select2();
+			 $('#other_filds tbody tr.two').find('td.student_list').html(response);
 			 renameRows();
 			});
 		}
@@ -377,10 +365,9 @@ $(document).ready(function() {
 		{		
 			$.ajax({
 			url: "ajax_homework_student_list.php?class_id="+class_id+"&section_id="+section_id,
-			}).done(function(response) { 
-			 //$("#studentlist").html(""+response+"");
-			 $('div.childfields:last-child').find('.studentlist').html(response);
-			 $('div.childfields:last-child').find(".student_data").select2();
+			}).done(function(response) { alert(response);
+			 
+			 $('#other_filds tbody tr.two').find('td.student_list').html(response);
 			 renameRows();
 			});
 		}
@@ -412,7 +399,7 @@ $(document).ready(function() {
 		$("#other_filds tbody tr.one").each(function(){
 			$(this).find('td:eq(0) select').attr({name:"assignment["+i+"][subject_id]"});
 			$(this).find('td:eq(1) input').attr({name:"assignment["+i+"][topic]"});
-			$(this).find('td:eq(2) input').attr({name:"assignment["+i+"][submission_date]"});
+			$(this).find('td:eq(2) input').attr({name:"assignment["+i+"][submission_date]"}).datepicker();
 			i++;
 		});	
 		
@@ -455,22 +442,24 @@ $(document).ready(function() {
 				<td>
 					<input type="file" class="form-control" name="file[]" id="file1">
 				</td>
-				<td>
-					<select name="student_id[]" class="form-control select2me input-medium" multiple='multiple' placeholder="Select..." id="student_data" >
-						<option value=""></option>
-							<?php
-								$r1=mysql_query("select `name`,`id` from login where `flag`=0 order by id ASC");		
-								$i=0;
-								while($row1=mysql_fetch_array($r1))
-								{
-									$id=$row1['id'];
-									$name=$row1['name'];
-								?>
-									<option value="<?php echo $id;?>">
-										<?php echo $name;?>
-									</option>                              
-						<?php }?> 
-					</select>
+				<td class="student_list">
+					<div class="ifYes" style="display:none;" >
+						<select name="student_id[]" class="form-control select2me input-medium" multiple='multiple' placeholder="Select..." id="student_data" >
+							<option value=""></option>
+								<?php
+									$r1=mysql_query("select `name`,`id` from login where `flag`=0 order by id ASC");		
+									$i=0;
+									while($row1=mysql_fetch_array($r1))
+									{
+										$id=$row1['id'];
+										$name=$row1['name'];
+									?>
+										<option value="<?php echo $id;?>">
+											<?php echo $name;?>
+										</option>                              
+							<?php }?> 
+						</select>
+					</div>
 				</td>
 				<td colspan="2">
 					<textarea class="form-control input-medium" rows="1" required placeholder="Discription" type="text" name="description[]"></textarea>
