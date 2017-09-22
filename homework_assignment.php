@@ -13,8 +13,12 @@ if(isset($_POST['submit']))
 	{
 
 		foreach($_FILES['file']['error'] as $k=>  $error) {
-			$data_arr['file'] = $_FILES['file']['name'][$key];
+			$data_arr['file_name'] = $_FILES['file']['name'][$key];
+			$data_arr['file_tmp_name'] = $_FILES['file']['tmp_name'][$key];
 		}
+		
+
+		
 	$class_id=$data_arrs["class_id"];
 	$section_id=$data_arrs["section_id"];
 	$subject_id=$data_arr["subject_id"];				
@@ -24,6 +28,8 @@ if(isset($_POST['submit']))
 	$sub_date=date('Y-m-d',strtotime($submission_date));
 	$description=$data_arr['description'];
 	$student_id = $data_arr['student_id'];
+	$file_name=$data_arr['file_name'];
+	$file_tmp_name=$data_arr['file_tmp_name'];
 
 	if($yesno=='1')
 	{
@@ -31,12 +37,13 @@ if(isset($_POST['submit']))
 			$r=mysql_query($sql);
 			$time=time();
 			$eventid=mysql_insert_id();
-			$file_name=$_FILES["file"]["name"]; 
+		if(!empty($file_tmp_name))
+		{		
 			$ext=pathinfo($file_name,PATHINFO_EXTENSION);
 			$photo=$topic.$time.'.'.$ext;
-			move_uploaded_file($_FILES["file"]["tmp_name"],"homework/".$photo);
+			move_uploaded_file($file_tmp_name,"homework/".$photo);
 			$r1=mysql_query("update `assignment` set file='$photo' where id='$eventid'");
-			
+		}	
 			
 				//---------------------------------------------------------------
 				$std_nm=mysql_query("SELECT `device_token`,`notification_key`,`id`,`role_id` FROM `login` where section_id='".$section_id."' AND  class_id='".$class_id."' AND device_token != '' ");
@@ -100,13 +107,14 @@ if(isset($_POST['submit']))
 		$sql1="insert into assignment(user_id,student_id,topic,description,class_id,section_id,subject_id,submission_date,curent_date) values('$user_id','$implodestsdnt','$topic','$description','$class_id','$section_id','$subject_id','$sub_date','$date')";
 			$r2=mysql_query($sql1); 
 			$time=time();
-			$eventid=mysql_insert_id();
-			$file_name=$_FILES["file"]["name"]; 
+			$eventid=mysql_insert_id(); 
+		if(!empty($file_tmp_name))
+		{	
 			$ext=pathinfo($file_name,PATHINFO_EXTENSION);
 			$photo=$topic.$time.'.'.$ext;
-			move_uploaded_file($_FILES["file"]["tmp_name"],"homework/".$photo);
+			move_uploaded_file($file_tmp_name,"homework/".$photo);
 			$r4=mysql_query("update `assignment` set file='$photo' where id='$eventid'");
-			 
+		}	 
 			foreach($student_id as $value)
 			{
 				$student_ids=$value;
@@ -351,7 +359,7 @@ $(document).ready(function() {
 			$.ajax({
 			url: "ajax_homework_student_list.php?class_id="+class_id,
 			}).done(function(response) {
-			 $('#other_filds tbody tr.two').find('td.student_list').html(response);
+			 $('#other_filds tbody tr.two td').find('div.student_list').html(response);
 			 renameRows();
 			});
 		}
@@ -365,9 +373,8 @@ $(document).ready(function() {
 		{		
 			$.ajax({
 			url: "ajax_homework_student_list.php?class_id="+class_id+"&section_id="+section_id,
-			}).done(function(response) { alert(response);
-			 
-			 $('#other_filds tbody tr.two').find('td.student_list').html(response);
+			}).done(function(response) { 
+			 $('#other_filds tbody tr.two td').find('div.student_list').html(response);
 			 renameRows();
 			});
 		}
@@ -383,13 +390,13 @@ $(document).ready(function() {
 		var tr2=$("#bottomTbl tbody#bottomTbody tr.two").clone();
 		$("#other_filds tbody").append(tr1);
 		$("#other_filds tbody").append(tr2);
-		classChnage();
-		classSectionChnage();
+		
 		renameRows();
 	}
 
 	$('.deleterow').live("click",function() {
-		$(this).closest("#childfields").remove();
+		$(this).closest("tr.one").next("tr.two").remove();
+		$(this).closest("tr.one").remove();
 		renameRows();
 	});	
 	
@@ -442,8 +449,8 @@ $(document).ready(function() {
 				<td>
 					<input type="file" class="form-control" name="file[]" id="file1">
 				</td>
-				<td class="student_list">
-					<div class="ifYes" style="display:none;" >
+				<td>
+					<div class="ifYes student_list" style="display:none;" >
 						<select name="student_id[]" class="form-control select2me input-medium" multiple='multiple' placeholder="Select..." id="student_data" >
 							<option value=""></option>
 								<?php
