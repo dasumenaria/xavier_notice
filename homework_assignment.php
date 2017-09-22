@@ -8,6 +8,24 @@ $date=date('Y-m-d');
  		
 if(isset($_POST['submit']))
 {
+	$data_arrs = $_POST;
+	echo "<pre>";
+		print_r($data_arrs);
+	echo "</pre>";	
+	
+	$i=0;
+	foreach($data_arrs['assignment'] as $key => $data_arr)
+	{
+
+			foreach ($_FILES['file']['error'] as  $error) {
+				  echo $_FILES['file']['name'][$key].'<br>';
+			}
+
+		$i++;
+	}
+		
+	exit;
+
 	
 	$class_id=$_POST["class_id"];
 	$section_id=$_POST["section_id"];
@@ -209,7 +227,7 @@ if(isset($_POST['submit']))
 											<div class="form-group"	>
 												<label class="col-md-3 control-label">Class</label>
 												<div class="col-md-3">
-													<select name="class_id" id="cls_id" class=" user form-control select2me input-medium" placeholder="Select Class">
+													<select name="class_id" id="cls_id" class="user form-control select2me input-medium" placeholder="Select Class">
 													<option value=""></option>
 													<?php
 													$cls_ftc=mysql_query("select * from master_class");		
@@ -245,8 +263,19 @@ if(isset($_POST['submit']))
 									</div>
 
 									
-										<div id="other_filds">
-										</div>
+										<table id="other_filds" border="1">
+											<thead>
+												<tr>
+													<th>Subject<br/>Image</th>
+													<th>Topic<br/>Student</th>
+													<th>Date<br/>Discription</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+											
+											</tbody>
+										</table>
 									
 										
 								 <div  align="center">
@@ -278,34 +307,50 @@ $(document).ready(function() {
 	});
 	
 	$(".user").live("change",function(){
-		var t=$(this).val();
+		Userchange();
+		renameRows();
+	});	 
+
+	
+	function Userchange()
+	{
+		var t= $(".user option:selected").val();
 		$.ajax({
 		url: "ajax_homework.php?pon="+t,
 		}).done(function(response) {
-		$("#dt").html(""+response+"");
-			$('.select2me').select2();  
+			$('#dt').html(response);
+			renameRows();
 		});
-	});	 
-
-	$(".user1").live("change",function(){
- 		var t=$("#cls_id").val();
-		var s=$(this).val();
+	}
+	
+	function user1()
+	{
+		var t=$("#cls_id").val();
+		var s=$('.user1 option:selected').val();
 		$.ajax({
 		url: "ajax_homework.php?pon="+t+"&pon1="+s,
 		}).done(function(response) {
-		 $("#data").html(""+response+"");
-		 
-		
+			$('table#other_filds tbody tr.one td:eq(0)').html(response);
+			$('table#bottomTbl tbody tr.one td:eq(0)').html(response);
+			$('table#other_filds tbody tr.two td:eq(1) select').select2();
+			renameRows();
 		});
-	 
+	}
+	
+	
+	$(".user1").live("change",function(){
+		user1();
+		renameRows();
 	});	  
 	
 	$("#cls_id").live("change",function(){
 		classChnage();
+		renameRows();
 	});
 
 	$("#sec_id").live("change",function(){ 
 		classSectionChnage();
+		renameRows();
 	});	
 	
 	
@@ -317,8 +362,9 @@ $(document).ready(function() {
 			$.ajax({
 			url: "ajax_homework_student_list.php?class_id="+class_id,
 			}).done(function(response) {
-			 $("#studentlist").html(""+response+"");
-			 $("#student_data").select2();
+			 $('div.childfields:last-child').find('.studentlist').html(response);
+			 $('div.childfields:last-child').find(".student_data").select2();
+			 renameRows();
 			});
 		}
 	}
@@ -332,8 +378,10 @@ $(document).ready(function() {
 			$.ajax({
 			url: "ajax_homework_student_list.php?class_id="+class_id+"&section_id="+section_id,
 			}).done(function(response) { 
-			 $("#studentlist").html(""+response+"");
-			 $("#student_data").select2();
+			 //$("#studentlist").html(""+response+"");
+			 $('div.childfields:last-child').find('.studentlist').html(response);
+			 $('div.childfields:last-child').find(".student_data").select2();
+			 renameRows();
 			});
 		}
 	}
@@ -344,21 +392,36 @@ $(document).ready(function() {
 	});
 	add_row();
 	function add_row(){
-		var tr=$("#allfields").clone();
-		$("#other_filds").append(tr);
+		var tr1=$("#bottomTbl tbody#bottomTbody tr.one").clone();
+		var tr2=$("#bottomTbl tbody#bottomTbody tr.two").clone();
+		$("#other_filds tbody").append(tr1);
+		$("#other_filds tbody").append(tr2);
 		classChnage();
 		classSectionChnage();
+		renameRows();
 	}
 
 	$('.deleterow').live("click",function() {
 		$(this).closest("#childfields").remove();
+		renameRows();
 	});	
 	
-	renameRows()
+	function renameRows()
 	{
-		var i=0;
-		$("#allfields").each(function(){
-			
+		var i=0; var j=0;
+		$("#other_filds tbody tr.one").each(function(){
+			$(this).find('td:eq(0) select').attr({name:"assignment["+i+"][subject_id]"});
+			$(this).find('td:eq(1) input').attr({name:"assignment["+i+"][topic]"});
+			$(this).find('td:eq(2) input').attr({name:"assignment["+i+"][submission_date]"});
+			i++;
+		});	
+		
+		
+		$("#other_filds tbody tr.two").each(function(){
+			$(this).find('td:eq(0) input').attr({name:"file[]"});
+			$(this).find('td:eq(1) select').attr({name:"assignment["+j+"][student_id][]"}).select2();
+			$(this).find('td:eq(2) textarea').attr({name:"assignment["+j+"][description]"});
+			j++;
 		});
 	}
 	
@@ -368,88 +431,54 @@ $(document).ready(function() {
  
  <?php scripts();?>
 
- 
- <div id="allfields">
-	<div id="childfields" class="row form-group "> 
-  				<div class="row">
-				<div class="col-md-12 form-group ">
-				<a class="btn btn-xs btn-default deleterow red" style="float: right;margin-right:79px;" href="#" role="button">
-					<i class="fa fa-times"></i>  Remove Row </a>
-				</div>
-				<div class="col-md-6">
-				 <div id="data">
-						<div class="form-group">
-						<label class="col-md-3 control-label">Subject</label>
-						<div class="col-md-3">
-							<select name="subject_id[]" class="form-control select2me input-medium" placeholder="Select Subject" >
-							<option value=""></option>
-							 </select>
-						</div>												 
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="col-md-3 control-label">Topic</label>
-						<div class="col-md-3">
-						<input class="form-control input-medium " required  value="" placeholder="Enter Topic" type="text" name="topic[]">
-						</div>
-							
-					</div> 
-				</div>
-				</div>
-									 
-			 <div class="row">
-				<div class="col-md-6">
-					<label class="col-md-3 control-label" align="center">Date</label>
-					<div class="col-md-3">
+
+ <div style="display:none;">
+	<table id="bottomTbl">
+		<tbody id="bottomTbody">
+			<tr class="one">
+				<td>
+					<select name="subject_id[]" class="form-control subject_id input-medium" placeholder="Select Subject" >
+						<option value=""></option>
+					</select>
+				</td>
+				<td>
+					<input class="form-control input-medium " required  value="" placeholder="Enter Topic" type="text" name="topic[]">
+				</td>
+				<td>
 					<input class="form-control form-control-inline input-medium date-picker" required  value="" placeholder="dd/mm/yyyy" type="text" data-date-format="dd-mm-yyyy"  name="submission_date[]">
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="control-label col-md-3">Image</label>
-						<div class=" col-md-6 fileinput fileinput-new" style="padding-left: 15px;" data-provides="fileinput">
-						<input type="file" class="form-control" name="file[]" id="file1">
-					</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-6 ifYes" style="display:none">
-					 
-						<div class="form-group">
-								<label class=" col-md-3 control-label">Select Student </label>
-							<div class="col-md-3" id="studentlist" >
-							<select name="student_id[]" class="form-control select2me input-medium" multiple='multiple' placeholder="Select..." id="student_data" >
-								<option value=""></option>
-									<?php
-										$r1=mysql_query("select `name`,`id` from login where `flag`=0 order by id ASC");		
-										$i=0;
-										while($row1=mysql_fetch_array($r1))
-										{
-											$id=$row1['id'];
-											$name=$row1['name'];
-										?>
-											<option value="<?php echo $id;?>">
-												<?php echo $name;?>
-											</option>                              
-								<?php }?> 
-							</select>
-							</div>
-						</div>
-					 
-				</div>
-					<div class="col-md-6">
-						<label class="col-md-3 control-label" align="center">Discription</label>
-						<div class="col-md-3">
-						<textarea class="form-control input-medium" rows="1" required placeholder="Discription" type="text" name="description[]"></textarea>										 	
-						</div>
-					</div>
-				</div>	
- 
+				</td>
+				<td>
+					<a class="btn btn-xs btn-default deleterow red" style="float: right;margin-right:79px;" href="#" role="button"> <i class="fa fa-times"></i>  Remove Row </a>
+				</td>
+			</tr>
+			<tr class="two">
+				<td>
+					<input type="file" class="form-control" name="file[]" id="file1">
+				</td>
+				<td>
+					<select name="student_id[]" class="form-control select2me input-medium" multiple='multiple' placeholder="Select..." id="student_data" >
+						<option value=""></option>
+							<?php
+								$r1=mysql_query("select `name`,`id` from login where `flag`=0 order by id ASC");		
+								$i=0;
+								while($row1=mysql_fetch_array($r1))
+								{
+									$id=$row1['id'];
+									$name=$row1['name'];
+								?>
+									<option value="<?php echo $id;?>">
+										<?php echo $name;?>
+									</option>                              
+						<?php }?> 
+					</select>
+				</td>
+				<td colspan="2">
+					<textarea class="form-control input-medium" rows="1" required placeholder="Discription" type="text" name="description[]"></textarea>
+				</td>
+			</tr>
+		</tbody>
+	</table>
  </div>
- </div> 
  
  
  

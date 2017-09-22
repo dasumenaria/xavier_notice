@@ -7,11 +7,7 @@ include("database.php");
  
 if((!empty($class_id)) && (empty($sect_id))){ ?>
 
-	<div class="form-group">
-						<label class="control-label col-md-3">Section</label> 
-							<div class="col-md-8">
-							   <div class="input-icon right">
-									<i class="fa"></i>
+	
 									<select class="form-control user1 select2me input-medium search_hw seduntFind" id="sec_id" required name="section_id">
 										<option value="">---Select Section---</option>
 											<?php 
@@ -32,22 +28,15 @@ if((!empty($class_id)) && (empty($sect_id))){ ?>
 												<option value="<?php echo $section_id; ?>"><?php echo $section_name; ?></option>
 											<?php } ?>
 									</select>
-								</div>
-								  
-							</div>
-					</div>
+								
 					
 			 	
  	<?php } 
 if((!empty($class_id)) && (!empty($sect_id))){
 ?>
  
-    <div class="form-group">
-    <label class="control-label col-md-3">Subject</label> 
-        <div class="col-md-8">
-           <div class="input-icon right">
-                <i class="fa"></i>
-                <select class="form-control select2me input-medium" required name="subject_id">
+    
+                <select class="form-control select2me input-medium" required name="subject_id[]">
                     <option value="">---Select Subject---</option>
                         <?php 
                             $query4=mysql_query("select * from `subject_mapping` where `class_id`='".$class_id."' && section_id='".$sect_id."'"); 
@@ -64,33 +53,12 @@ if((!empty($class_id)) && (!empty($sect_id))){
                                 <?php } ?>
                         <?php } ?>
                 </select>
-            </div>
-             
-        </div>
-    </div>
+           
  
  <?php }
  
 ?>
 
-<script>
-$('.date-picker').datepicker();
-$('.timepicker').timepicker();
-$('.AddNew').click(function(){
-   var row = $(this).closest('tr').clone();
-   row.find('input').val('');
-   $(this).closest('tr').after(row);
-   
-   $('.date-picker').datepicker();
-   $('.timepicker').timepicker();
-   
-   
-   $('input[type="button"]', row).removeClass('AddNew').addClass('RemoveRow').val('-');
-});
 
-$('table').on('click', '.RemoveRow', function(){ 
-  $(this).closest('tr').remove();
-});	
-	</script>
 	
 	
