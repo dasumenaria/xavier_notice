@@ -36,7 +36,7 @@ date_default_timezone_set('asia/kolkata');
 			$student=implode(',',$student_id);	
 			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from',`student_id` ='$student' ");
 		}
-		 
+		$insert_id=mysql_insert_id(); 
 		$message='Text insert successfully';	
 	}
   ?> 
@@ -154,6 +154,16 @@ span {
 <?php footer();?>
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script>
+<?php if($insert_id>0){ ?>
+var update_id = <?php echo $insert_id; ?>;
+		$.ajax({
+			url: "notification_page.php?function_name=create_textmsg_notifys&id="+update_id,
+			type: "POST",
+			success: function(data)
+			{
+ 			}
+		});
+<?php } ?>
 	$(document).ready(function()
 	{
 		$('#role_id').on('change', function(){
