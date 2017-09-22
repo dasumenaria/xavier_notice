@@ -18,8 +18,7 @@ $date_current=date('Y-m-d');
  
  $i=0;
   
- 
-	 foreach($subject_id as $value){
+  foreach($subject_id as $value){
 
 		 $t_f=$time_from[$i];
 	 	 $subject_id=$value;
