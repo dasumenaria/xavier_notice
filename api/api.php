@@ -3977,7 +3977,7 @@ $string_insert[$x]['time']=$time;
   		
 	}
 
-        public function ExamTimeTable() 
+    public function ExamTimeTable() 
 	{
 		include_once("common/global.inc.php");
         global $link;
@@ -3985,7 +3985,8 @@ $string_insert[$x]['time']=$time;
             $this->response('', 406);
         }
 			$class_id = $this->_request['class_id'];
-			$tt_sql = $this->db->prepare("SELECT * FROM exam_time_table where class_id='".$class_id."' AND flag='0' order by exam_date Asc ");
+			$section_id = $this->_request['section_id'];
+			$tt_sql = $this->db->prepare("SELECT * FROM exam_time_table where `class_id`='".$class_id."' && `section_id`='".$section_id."' && flag='0' order by exam_date Asc ");
 			$tt_sql->execute();
 			if($tt_sql->rowCount()>0)
 			{
@@ -3993,8 +3994,8 @@ $string_insert[$x]['time']=$time;
 				$f_timtbl = $tt_sql->fetchALL(PDO::FETCH_ASSOC);
 				foreach($f_timtbl as $f_timtbl1)
 					{
-						$from_time=$f_timtbl1['from_time'];
-						$to_time=$f_timtbl1['to_time'];
+						$from_time=$f_timtbl1['time_from'];
+						$to_time=$f_timtbl1['time_to'];
 						$room_no=$f_timtbl1['room_no'];
 						$exam_date=$f_timtbl1['exam_date'];
 						$exam_day=date('D',strtotime($exam_date)); 
