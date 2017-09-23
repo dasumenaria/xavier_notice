@@ -137,7 +137,7 @@ span {
  									<div class="form-group">
 										<label class="col-md-3 control-label">Message</label>
 										<div class="col-md-6">
-											<textarea class="form-control input-md" rows="4" maxlength="30" required type="text" name="message"></textarea>
+											<textarea class="form-control input-md" rows="4" required type="text" name="message"></textarea>
 										</div>
 									</div>
 									<div class=" right1" align="center">
