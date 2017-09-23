@@ -15,26 +15,26 @@ date_default_timezone_set('asia/kolkata');
 		$date_from=date('Y-m-d');
 		if($role_id==1)
 		{
-			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from' ");
+			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from' ,`user_id`='$faculty_login_id' ");
 		}
 		if($role_id==2)
 		{
 			$class_id= array_filter($class_id);
 			$class=implode(',',$class_id);	
-			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from',`class_id` ='$class' ");
+			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from',`class_id` ='$class' ,`user_id`='$faculty_login_id' ");
 			 
 		}
 		if($role_id==4)
 		{
 			$faculty_id= array_filter($faculty_id);
 			$faculty=implode(',',$faculty_id);	
-			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from',`faculty_id` ='$faculty' ");
+			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from',`faculty_id` ='$faculty' ,`user_id`='$faculty_login_id' ");
 		}
 		if($role_id==5)
 		{
 			$student_id= array_filter($student_id);
 			$student=implode(',',$student_id);	
-			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from',`student_id` ='$student' ");
+			mysql_query("insert into `text_message` set `role_id`='$role_id',`text`='$message' , `date`='$date_from',`student_id` ='$student' ,`user_id`='$faculty_login_id' ");
 		}
 		$insert_id=mysql_insert_id(); 
 		$message='Text insert successfully';	
