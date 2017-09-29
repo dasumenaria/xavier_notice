@@ -1,4 +1,4 @@
-<?php
+ vv<?php
  include("index_layout.php");
  include("database.php");
 @$session_id=$_SESSION['id'];

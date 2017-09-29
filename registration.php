@@ -310,13 +310,11 @@ if(isset($_POST['submit']))
 			}).done(function(response) 
 			{
 				if(response==1){
-					//$('#msg').html('Schollor No. Already Define.');
+					 
 					alert('Schollor Number Already Define.');
 					$('.scholrcheck').val("");
 				}else{
-					//$('#msg').html('Schollor No. Not Define.');
-					alert('Schollor Number Not Define.');
-					$('.scholrcheck').val("");
+					 
 				}
 			});		
 			}; 

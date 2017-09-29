@@ -144,6 +144,8 @@ include("database.php");
 											 
 									<div class="control-group" id="branchselect" >
 										<div class="controls">
+										<input type="checkbox" class="chk_boxes checker" label="check all"  /><b>All Class</b> 
+										<br>
 										<?php 
 										$sql="select distinct(class_name),id from master_class";
 										$res=mysql_query($sql) or die(mysql_error());
@@ -153,8 +155,11 @@ include("database.php");
 										 if($count==4){ $count=1;?><?php } 
 												?>
 										<td class="checkbox">
-										<label><input type="checkbox" value="<?php echo $result['id']; ?>" id="<?php echo $result['class_name']; ?>" name="class_id[]" /><?php echo $result['class_name']; ?></label>
+										<label><input type="checkbox" value="<?php echo $result['id']; ?>" id="<?php echo $result['class_name']; ?>" class="all_chk" name="class_id[]" /><?php echo $result['class_name']; ?></label>
+										
 										</td>
+										
+										
 										<?php
 										}
 										?>
@@ -187,6 +192,24 @@ include("database.php");
 </body>
 <?php footer();?>
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+	<script>
+$(document).ready(function(){
+    $('.chk_boxes').click(function() {
+    value = +$('.chk_boxes').is( ':checked' );
+if(value==0)
+	{
+		$(".all_chk" ).parent('span').removeClass('checked');
+		$(".all_chk" ).removeAttr('checked','checked');
+	}
+else
+	{
+		$(".all_chk" ).parent('span').addClass('checked');
+		$(".all_chk" ).attr('checked','checked');
+	}
+		
+	});
+});
+</script>	
 <script>
 <?php if($update_id>0){?>
 		var update_id = <?php echo $update_id; ?>;
@@ -205,29 +228,8 @@ include("database.php");
 		$("#success").hide();
 	}
  </script>
-
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <script>tinymce.init({ selector:'textarea' });</script>
-<script>
-$(document).ready(function(){    
-	 $("#bw").live("click",function(){
-			if($(this).prop("checked") == true){
-			$("#branchselect").show();
-			}
-			else if($(this).prop("checked") == false){
-				$("#branchselect").hide();
-			}
-        });
-		$("#mw").live("click",function(){
-		   if($(this).prop("checked") == true){
-			 $("#mediumselect").show();
-			}
-			else if($(this).prop("checked") == false){
-				$("#mediumselect").hide();
-			}
-		});
-	});	
-</script>
 <?php scripts();?>
 </html>
 

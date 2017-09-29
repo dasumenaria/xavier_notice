@@ -5,10 +5,10 @@
  $user_id=$_SESSION['id'];
 $scholrcheck = $_GET['scholrcheck'];
 
-$query = mysql_query(" SELECT * FROM login WHERE eno = ".$scholrcheck." ");
+$query = mysql_query(" SELECT * FROM login WHERE eno = '".$scholrcheck."' ");
 
-$aa = mysql_fetch_array($query);
-if(!empty($aa)){
+$aa = mysql_num_rows($query);
+if($aa>0){
 	echo "1";
 }else{
 	echo "0";

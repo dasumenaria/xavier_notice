@@ -7,7 +7,7 @@ class API extends REST {
     public $data = "";
     
     const DB_SERVER = "localhost";
-    const DB_USER = "root";
+    const DB_USER = "root"; 
     const DB_PASSWORD = "";
     const DB = "new_notice";
 	
@@ -48,7 +48,46 @@ class API extends REST {
 	//If the method not exist with in this class, response would be "Page not found".
 		}	
         //,Jr@qc5#,5&C
-                                }
+  }
+public function AboutUs()
+	{
+		include_once("common/global.inc.php");
+        global $link;
+		if ($this->get_request_method() != "POST") 
+		{
+			$this->response('', 406);
+		}
+		$sql = $this->db->prepare("SELECT * FROM about_us where `flag`= 0 limit 1");
+		$sql->execute();
+		if($sql->rowCount()>0)
+		{
+			$row_gps = $sql->fetchALL(PDO::FETCH_ASSOC);
+			$x=0;
+			foreach($row_gps as $key=>$valye)	
+			{
+				$image=$valye['image'];
+				$SchoolAddress=$valye['SchoolAddress'];
+$Schoolpolicy=$valye['Schoolpolicy'];
+$SchoolContact=$valye['SchoolContact'];
+ 
+ 
+				if(!empty($image)){
+					$FilePath = $site_url.$image;
+				}else{
+					$FilePath = "";
+				}
+				 
+			}
+			$result=array('SchoolAddress'=>$SchoolAddress,'Schoolpolicy'=>$Schoolpolicy,'SchoolContact'=>$SchoolContact,'image'=>$FilePath) ;
+			$success = array('status'=> true, "Error" => "","about_us"=> $result);
+			$this->response($this->json($success), 200); 
+		}
+		else
+		{
+			$success = array('status'=> false, "Error" => "No data found",'responce' =>'');
+			$this->response($this->json($success), 200); 
+		}
+	}
 ////////////My API FUN///////////////////////////////
 public function login() 
 	{
@@ -68,7 +107,7 @@ public function login()
 			$sql->execute();
 			 if($sql->rowCount()>0)
 			  {
-				$about_sql = $this->db->prepare("SELECT * FROM about_us");
+				$about_sql = $this->db->prepare("SELECT * FROM about_us  where `flag`=1");
 				$about_sql->execute();
 				$about_sql1 = $about_sql->fetch(PDO::FETCH_ASSOC);
 				$x_about_us=$about_sql1['about_us'];
@@ -198,6 +237,43 @@ if(empty($Tmobile_no)){$Tmobile_no='N/A';}
 		}
  	}
 ////////////////////////
+public function SportMaster()
+	{
+		include_once("common/global.inc.php");
+        global $link;
+		if ($this->get_request_method() != "POST") 
+		{
+			$this->response('', 406);
+		}
+		$sql = $this->db->prepare("SELECT * FROM master_sports where `flag`=0 ");
+		$sql->execute();
+		if($sql->rowCount()>0)
+		{
+			$row_gps = $sql->fetchALL(PDO::FETCH_ASSOC);
+			$x=0;
+			foreach($row_gps as $key=>$valye)	
+			{
+				$image=$valye['image'];
+					
+				if(!empty($image)){
+					$FilePath = $site_url.$image;
+				}else{
+					$FilePath = "";
+				}
+				$string_insert[$key]=$row_gps[$key];
+						$string_insert[$x]['image']=$FilePath;
+$x++;
+			}
+			$result = array("master_sports"=> $string_insert);
+			$success = array('status'=> true, "Error" => "",'responce' => $result);
+			$this->response($this->json($success), 200); 
+		}
+		else
+		{
+			$success = array('status'=> false, "Error" => "No data found",'responce' =>'');
+			$this->response($this->json($success), 200); 
+		}
+	}
 public function push_token_update() {
 		global $link;
 		include_once("common/global.inc.php");
@@ -274,26 +350,26 @@ public function notification() {
             {
 				
 					$timestamp=$row_notification['dateofpublish'];
-					$dt=str_replace('-', '', $timestamp);
-					$event_time=$row_notification['time'];
-					$newDateTime = date('h:i', strtotime($event_time));
-					$npm = date('A', strtotime($event_time));
-					$tm=str_replace(':', '', $newDateTime);
-					$exact_trim=$dt.$tm;
-					$datetime = DateTime::createFromFormat('YmdHi', $exact_trim);
-					$ed=$datetime->format('d');
-					$edd=$datetime->format('D');
-					$em=$datetime->format('M');
-					$ey=$datetime->format('Y');
-					$eh=$datetime->format('H');
-					$ei=$datetime->format('i');
-					$date_time=array('date' => $ed,
-					'day' => $edd,
-					'month' => $em,
-					'year' => $ey,
-					'H' => $eh,
-					'I' => $ei,
-					'A' => $npm);
+$dt=str_replace('-', '', $timestamp);
+$event_time=$row_notification['time'];
+$newDateTime = date('h:i', strtotime($event_time));
+$npm = date('A', strtotime($event_time));
+$tm=str_replace(':', '', $newDateTime);
+$exact_trim=$dt.$tm;
+$datetime = DateTime::createFromFormat('YmdHi', $exact_trim);
+$ed=$datetime->format('d');
+$edd=$datetime->format('D');
+$em=$datetime->format('M');
+$ey=$datetime->format('Y');
+$eh=$datetime->format('H');
+$ei=$datetime->format('i');
+$date_time=array('date' => $ed,
+'day' => $edd,
+'month' => $em,
+'year' => $ey,
+'H' => $eh,
+'I' => $ei,
+'A' => $npm);
 				 if(!empty($row_notification['file_name'])){
 						 $row_notification['file_name'] = $site_url."notice/".$row_notification['file_name'];
 					}else{
@@ -307,7 +383,7 @@ public function notification() {
 						 $row_notification['image'] = "";
 					}
 					if($row_notification['shareable']==1)
-                 {$shareable=true;}else{$shareable=false;}
+                                        {$shareable=true;}else{$shareable=false;}
 					
 				
 			$result[] = array('id' => $row_notification['id'],
@@ -315,13 +391,13 @@ public function notification() {
                     'dateofpublish' => $row_notification['dateofpublish'],
                     'time'=> $row_notification['time'],
 					'date_time'=> $date_time,
-					'notice_no'=> $row_notification['notice_no'],
-					'pdf_file'=> $row_notification['file_name'],
+'notice_no'=> $row_notification['notice_no'],
+'pdf_file'=> $row_notification['file_name'],
 
-					'image'=> $row_notification['image'],
-					'shareable'=> $shareable,
-					'description'=> $row_notification['description']
-						);
+'image'=> $row_notification['image'],
+'shareable'=> $shareable,
+'description'=> $row_notification['description']
+	);
             }
 			//$result1 = array("login" => $result );
 			$success = array('status'=> true, "Error" => "your notification",'notification' => $result);
@@ -352,29 +428,27 @@ public function notification_details() {
 			$row_notification = $sql->fetch(PDO::FETCH_ASSOC);
             
 					$timestamp=$row_notification['dateofpublish'];
-					$dt=str_replace('-', '', $timestamp);
-					$event_time=$row_notification['time'];
-					$newDateTime = date('h:i', strtotime($event_time));
-					$npm = date('A', strtotime($event_time));
-					$tm=str_replace(':', '', $newDateTime);
-					$exact_trim=$dt.$tm;
-					$datetime = DateTime::createFromFormat('YmdHi', $exact_trim);
-					$ed=$datetime->format('d');
-					$edd=$datetime->format('D');
-					$em=$datetime->format('M');
-					$ey=$datetime->format('Y');
-					$eh=$datetime->format('H');
-					$ei=$datetime->format('i');
-					$date_time=array('date' => $ed,
-					'day' => $edd,
-					'month' => $em,
-					'year' => $ey,
-					'H' => $eh,
-					'I' => $ei,
-					'A' => $npm);
-				 if($row_notification['shareable']==1)
-                 {$shareable=true;}else{$shareable=false;}
-			 
+$dt=str_replace('-', '', $timestamp);
+$event_time=$row_notification['time'];
+$newDateTime = date('h:i', strtotime($event_time));
+$npm = date('A', strtotime($event_time));
+$tm=str_replace(':', '', $newDateTime);
+$exact_trim=$dt.$tm;
+$datetime = DateTime::createFromFormat('YmdHi', $exact_trim);
+$ed=$datetime->format('d');
+$edd=$datetime->format('D');
+$em=$datetime->format('M');
+$ey=$datetime->format('Y');
+$eh=$datetime->format('H');
+$ei=$datetime->format('i');
+$date_time=array('date' => $ed,
+'day' => $edd,
+'month' => $em,
+'year' => $ey,
+'H' => $eh,
+'I' => $ei,
+'A' => $npm);
+				 
 				 if(!empty($row_notification['file_name'])){
 						 $row_notification['file_name'] = $site_url."notice/".$row_notification['file_name'];
 					}else{
@@ -397,7 +471,7 @@ public function notification_details() {
 				'notice_no'=> $row_notification['notice_no'],
 				'pdf_file'=> $row_notification['file_name'],
 				'image'=> $row_notification['image'],
-				'shareable'=> $shareable,
+				'shareable'=> $row_notification['shareable'],
 				'description'=> $row_notification['description']
 				);
 
@@ -1339,8 +1413,8 @@ public function inquiry_form(){
             $this->response('', 406);
         }
 		
-		$user_id = $this->_request['user_id'];
-		$name = $this->_request['name'];
+		 $user_id = $this->_request['user_id'];
+		 $name = $this->_request['name'];
 		$email = $this->_request['email'];
 		$role_id = $this->_request['role_id'];
 		$study= $this->_request['study'];
@@ -1793,8 +1867,8 @@ public function fetch_gallery() {
 			for($c=1;$c<=12; $c++)
 			{
 				$first_date=date('Y-m-d', strtotime($x.'-'.$c.'-01'));
-			    $last_date=date('Y-m-t', strtotime($x.'-'.$c.'-01'));  
-						
+			        $last_date=date('Y-m-t', strtotime($x.'-'.$c.'-01'));  
+				$monthss=	$c-1;	
 				$currentTime=strtotime($first_date);
 				$endTime=strtotime($last_date);
 				//---
@@ -1833,14 +1907,17 @@ public function fetch_gallery() {
 						foreach($cal_c1 as $cal_c11)
 						{
 							$category_id= $cal_c11['category_id'];
+$category_name='';
+if(!empty($category_id)){
 							$cat_type = $this->db->prepare("SELECT * FROM master_category where id='".$category_id."'");
 							$cat_type->execute();
 							$cat_type1= $cat_type->fetch(PDO::FETCH_ASSOC);
-							
+$category_name=$cat_type1['category_name'];
+							}
 							$result_c[] = array(
 								'id' => $cal_c11['id'],
 								'name' => $cal_c11['description'],
-								'type' => $cat_type1['category_name'],
+								'type' => $category_name,
 								'date' => $cal_c11['date'],
 								'time' =>' '
 							);
@@ -1866,7 +1943,7 @@ public function fetch_gallery() {
 					unset($result_c);
 				}
 				unset($timestamp);
-				$result1[] = array('month_id' => $c, 'year'=>$ey,
+				$result1[] = array('month_id' => $monthss, 'year'=>$ey,
 				'data' => $result);
 				unset($result);
 			}
@@ -1882,9 +1959,9 @@ public function fetch_gallery() {
 
 public function add_to_calendar(){
 		
-			if ($this->get_request_method() != "POST") {
-				$this->response('', 406);
-			}
+		if ($this->get_request_method() != "POST") {
+            $this->response('', 406);
+        }
 			$user_id = $this->_request['user_id'];
 			$role_id = $this->_request['role_id'];
 			$event_id = $this->_request['event_id'];
@@ -1914,15 +1991,14 @@ public function add_to_calendar(){
 				}
 				else if($cate_sql->rowCount()==1 && $option=='remove')
 				{
-					$sql_d = $this->db->prepare("DELETE from add_to_calendar where user_id='".$user_id."' AND event_id='".$event_id."' AND role_id='".$role_id."' ");
-					$sql_d->execute();
-					$success = array('status'=> true, "Error" => "Event remove successfully", "isadded" => false);
-					$this->response($this->json($success), 200);
+				$sql_d = $this->db->prepare("DELETE from add_to_calendar where user_id='".$user_id."' AND event_id='".$event_id."' AND role_id='".$role_id."' ");
+				$sql_d->execute();
+				$success = array('status'=> true, "Error" => "Event remove successfully", "isadded" => false);
+                $this->response($this->json($success), 200);
 				}
-				else
-				{
+				else{
 					$error = array('status' => false, "Error" => "Try again",'Responce' => '');
-					$this->response($this->json($error), 200);
+			     $this->response($this->json($error), 200);
 				}
 
 }
@@ -2033,12 +2109,10 @@ public function assignment()
 		if ($this->get_request_method() != "POST") {
              $this->response('', 406);
            }
-		   
 		$assignment_type = $this->_request['assignment_type'];
 		$user_id = $this->_request['user_id'];
 		$class_id = $this->_request['class_id'];
-		$section_id = $this->_request['section_id'];
- 		
+		$section_id = $this->_request['section_id'];		
 		@$student_id = $this->_request['student_id'];
 		$subject_id= $this->_request['subject_id'];
 		$topic = $this->_request['topic'];
@@ -2095,7 +2169,7 @@ public function assignment()
 							'title'=> $title ,
 							'message' 	=> $message,
 							'button_text'	=> 'View',
-							'link'	=> 'notice://Assignment?id='.$insert_id.'&student_id='.$user_idss,
+							'link'	=> 'notice://Assignment?id='.$insert_id.'&student_id=',
 							'notification_id'	=> $insert_id,
 						);
 						$url = 'https://fcm.googleapis.com/fcm/send';
@@ -2109,10 +2183,8 @@ public function assignment()
 							'Authorization: key=' .$notification_key,
 							'Content-Type: application/json'
 						);
-						$link='notice://Assignment?id='.$insert_id.'&student_id='.$user_idss;
 						//--- NOTIFICATIO INSERT
-							$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id,:link)");
-							$NOTY_insert->bindParam(":link", $link, PDO::PARAM_STR);
+							$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id)");
 							$NOTY_insert->bindParam(":title", $title, PDO::PARAM_STR);
 							$NOTY_insert->bindParam(":message", $message, PDO::PARAM_STR);
 							$NOTY_insert->bindParam(":user_id", $user_idss, PDO::PARAM_STR);
@@ -2198,11 +2270,9 @@ public function assignment()
 						'Authorization: key=' .$notification_key,
 						'Content-Type: application/json'
 					);
-					$link='notice://Assignment?id='.$insert_id.'&student_id='.$user_ids;
 					//--- NOTIFICATIO INSERT
-						$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id,:link)");
+						$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id)");
 						$NOTY_insert->bindParam(":title", $title, PDO::PARAM_STR);
-						$NOTY_insert->bindParam(":link", $link, PDO::PARAM_STR);
 						$NOTY_insert->bindParam(":message", $message, PDO::PARAM_STR);
 						$NOTY_insert->bindParam(":user_id", $user_idss, PDO::PARAM_STR);
 						$NOTY_insert->bindParam(":submitted_by", $submitted_by, PDO::PARAM_STR);
@@ -2575,16 +2645,14 @@ public function fetch_syllabus() {
 			{//Insert
 				$appoint_to=$this->_request['appoint_to'];
 				$appoint_date=$this->_request['appoint_date'];/// YMD
-				$mobile_no=$this->_request['mobile_no'];/// YMD
 				$appoint_date_cnv=date('Y-m-d', strtotime($appoint_date));
 				$appoint_time=$this->_request['appoint_time'];
 				$reason=$this->_request['reason'];
 				$student_id=$this->_request['student_id'];
 				$name=$this->_request['name'];
 				 
-				$sql_insert = $this->db->prepare("INSERT into appointment(appoint_to,appoint_date,appoint_time,reason,student_id,name,mobile_no)VALUES(:appoint_to,:appoint_date,:appoint_time,:reason,:student_id,:name,:mobile_no)");
+				$sql_insert = $this->db->prepare("INSERT into appointment(appoint_to,appoint_date,appoint_time,reason,student_id,name)VALUES(:appoint_to,:appoint_date,:appoint_time,:reason,:student_id,:name)");
 				$sql_insert->bindParam(":appoint_to", $appoint_to, PDO::PARAM_STR);
-				$sql_insert->bindParam(":mobile_no", $mobile_no, PDO::PARAM_STR);
 				$sql_insert->bindParam(":appoint_date", $appoint_date_cnv, PDO::PARAM_STR);
 				$sql_insert->bindParam(":appoint_time", $appoint_time, PDO::PARAM_STR);
 				$sql_insert->bindParam(":reason", $reason, PDO::PARAM_STR);
@@ -2793,11 +2861,9 @@ if ($std_nm->rowCount() != 0) {
 						'Authorization: key=' .$notification_key,
 						'Content-Type: application/json'
 					);
-					$link='notice://leave_note?id='.$update_id;
 					//--- NOTIFICATIO INSERT
-						$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id,:link)");
+						$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id)");
 						$NOTY_insert->bindParam(":title", $title, PDO::PARAM_STR);
-						$NOTY_insert->bindParam(":link", $link, PDO::PARAM_STR);
 						$NOTY_insert->bindParam(":message", $message, PDO::PARAM_STR);
 						$NOTY_insert->bindParam(":user_id", $user_id, PDO::PARAM_STR);
 						$NOTY_insert->bindParam(":submitted_by", $submitted_by, PDO::PARAM_STR);
@@ -2903,7 +2969,7 @@ if ($std_nm->rowCount() != 0) {
 	
 	}
 //-- Leave Action  // Push  // Notification
-	public function leaveAction()
+	public function leaveAction() 
 	{
 		global $link;
 		include_once("common/global.inc.php");
@@ -2961,11 +3027,9 @@ if ($std_nm->rowCount() != 0) {
 							'Authorization: key=' .$notification_key,
 							'Content-Type: application/json'
 						);
-						$link='notice://leave_approve?id='.$update_id;
 						//--- NOTIFICATIO INSERT
-							$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id,:link)");
+							$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id)");
 							$NOTY_insert->bindParam(":title", $title, PDO::PARAM_STR);
-							$NOTY_insert->bindParam(link);
 							$NOTY_insert->bindParam(":message", $message, PDO::PARAM_STR);
 							$NOTY_insert->bindParam(":user_id", $user_id, PDO::PARAM_STR);
 							$NOTY_insert->bindParam(":submitted_by", $submitted_by, PDO::PARAM_STR);
@@ -3034,10 +3098,8 @@ if ($std_nm->rowCount() != 0) {
 						'Authorization: key=' .$notification_key,
 						'Content-Type: application/json'
 					);
-					$link='notice://leave_approve?id='.$update_id;
 					//--- NOTIFICATIO INSERT
-						$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id,:link)");
-						$NOTY_insert->bindParam(":link", $link, PDO::PARAM_STR);
+						$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id)");
 						$NOTY_insert->bindParam(":title", $title, PDO::PARAM_STR);
 						$NOTY_insert->bindParam(":message", $message, PDO::PARAM_STR);
 						$NOTY_insert->bindParam(":user_id", $user_id, PDO::PARAM_STR);
@@ -3105,7 +3167,7 @@ if ($std_nm->rowCount() != 0) {
 					$sql_update->bindParam(":status", $response_type, PDO::PARAM_STR);
 					$sql_update->bindParam(":id", $update_id, PDO::PARAM_STR);
 					$sql_update->execute();
-					/*//--
+					//--
 						$sub_sqls = $this->db->prepare("SELECT `student_id` FROM `appointment` where id='".$update_id."'");
 						$sub_sqls->execute();
 						$sub_sqlsa= $sub_sqls->fetch(PDO::FETCH_ASSOC);
@@ -3143,10 +3205,8 @@ if ($std_nm->rowCount() != 0) {
 							'Authorization: key=' .$notification_key,
 							'Content-Type: application/json'
 						);
-						 
 						//--- NOTIFICATIO INSERT
-							$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id,:link)");
-							$NOTY_insert->bindParam(":link", $link, PDO::PARAM_STR);
+							$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id)");
 							$NOTY_insert->bindParam(":title", $title, PDO::PARAM_STR);
 							$NOTY_insert->bindParam(":message", $message, PDO::PARAM_STR);
 							$NOTY_insert->bindParam(":user_id", $user_id, PDO::PARAM_STR);
@@ -3168,7 +3228,7 @@ if ($std_nm->rowCount() != 0) {
 							$result = curl_exec($ch);
 							curl_close($ch);
  					//-- 
-					 */
+					 
 					$success = array('status'=> true, "Error" => "Thank you your appointment is approve");
 					$this->response($this->json($success), 200);
 							
@@ -3182,7 +3242,7 @@ if ($std_nm->rowCount() != 0) {
 					$sql_update->bindParam(":status", $response_type, PDO::PARAM_STR);
 					$sql_update->bindParam(":id", $update_id, PDO::PARAM_STR);
 					$sql_update->execute();
-					/*//--
+					//--
 						$sub_sqls = $this->db->prepare("SELECT `student_id` FROM `appointment` where id='".$update_id."'");
 						$sub_sqls->execute();
 						$sub_sqlsa= $sub_sqls->fetch(PDO::FETCH_ASSOC);
@@ -3239,7 +3299,7 @@ if ($std_nm->rowCount() != 0) {
 							curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 							curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 							$result = curl_exec($ch);
-							curl_close($ch);*/
+							curl_close($ch);
  					//-- 
 					$success = array('status'=> true, "Error" => "Thank you your appointment is reject");
 					$this->response($this->json($success), 200);
@@ -3252,7 +3312,7 @@ if ($std_nm->rowCount() != 0) {
 					$sql_update->bindParam(":status", $response_type, PDO::PARAM_STR);
 					$sql_update->bindParam(":id", $update_id, PDO::PARAM_STR);
 					$sql_update->execute();
-					/*//--
+					//--
 						$sub_sqls = $this->db->prepare("SELECT `student_id` FROM `appointment` where id='".$update_id."'");
 						$sub_sqls->execute();
 						$sub_sqlsa= $sub_sqls->fetch(PDO::FETCH_ASSOC);
@@ -3311,7 +3371,6 @@ if ($std_nm->rowCount() != 0) {
 							curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 							$result = curl_exec($ch);
 							curl_close($ch);
-							*/
  					//-- 
 					$success = array('status'=> true, "Error" => "Thank you your appointment is completed");
 					$this->response($this->json($success), 200);
@@ -3412,7 +3471,9 @@ if ($std_nm->rowCount() != 0) {
 $ResultMainArray=array();
                 if($tt_sql->rowCount()>0)
                 {
-                 $f_timtbl = $tt_sql->fetchALL(PDO::FETCH_ASSOC);
+                
+                
+                $f_timtbl = $tt_sql->fetchALL(PDO::FETCH_ASSOC);
                 
                 
                		$DaysAray=array();
@@ -3426,9 +3487,9 @@ $ResultMainArray=array();
 						{
 							$from_id=date('h:i', strtotime($f_timtbl1['time_from']));
 							$to_id=date('h:i', strtotime($f_timtbl1['time_to']));
-							$teacher_name=$f_timtbl1['teacher_name'];
-							$period=$f_timtbl1['period'];
 							$subject_id=$f_timtbl1['subject_id'];
+$teacher_name=$f_timtbl1['teacher_name'];
+							$period=$f_timtbl1['period'];
 								$sql = $this->db->prepare("SELECT `subject_name` FROM master_subject WHERE id='".$subject_id."'");
 								$sql->execute();
 								$stds = $sql->fetch(PDO::FETCH_ASSOC);
@@ -3437,7 +3498,7 @@ $ResultMainArray=array();
 							$resultArray[$x]['subject']=$subject_name;                        
 							$resultArray[$x]['from']=$from_id;                        
 							$resultArray[$x]['to']=$to_id;
-							$resultArray[$x]['teacher_name']=$teacher_name;
+$resultArray[$x]['teacher_name']=$teacher_name;
 							$resultArray[$x]['period']=$period;
 							
 						$x++;    
@@ -3530,7 +3591,6 @@ $section_id=$this->_request['section_id'];
 			$this->response($this->json($error), 200);
 		}
 	}
-	
 
 //- DirectorPrincipleMessage
 	public function DirectorPrincipleMessage() 
@@ -3635,14 +3695,77 @@ if(!empty($row_gp ['pic'])){
 					$sql_insert->bindParam(":remark", $remark, PDO::PARAM_STR);
 					$sql_insert->bindParam(":login_id", $login_id, PDO::PARAM_STR);
 					$sql_insert->execute();	
+					// notification
+				$insert_id = $this->db->lastInsertId();
+ 				//--
+ 					
+ 					$std_nm = $this->db->prepare("SELECT `device_token`,`notification_key`,`role_id` FROM `login` where id='".$sid."' && `device_token` !='' ");
+					$std_nm->execute();
+					$ftc_nm= $std_nm->fetch(PDO::FETCH_ASSOC);
+					$device_token = $ftc_nm['device_token'];
+					$notification_key = $ftc_nm['notification_key'];
+					$role_id = $ftc_nm['role_id'];
+					
+					$message='Remarks Submitted';
+					$title='Remarks';
+					$submitted_by=$login_id;
+					$user_id=$sid;
+					$date=date("M d Y");
+					$time=date("h:i A");
+					
+ 					$msg = array
+					(
+						'title' => $title,
+						'message' 	=> $message,
+						'button_text'	=> 'View',
+						'link'	=> 'notice://remarks?id='.$insert_id,
+						'notification_id'	=> $insert_id,
+					);
+					$url = 'https://fcm.googleapis.com/fcm/send';
+					$fields = array
+					(
+						'registration_ids' 	=> array($device_token),
+						'data'			=> $msg
+					);
+					$headers = array
+					(
+						'Authorization: key=' .$notification_key,
+						'Content-Type: application/json'
+					);
+					$link='notice://remarks?id='.$insert_id;
+					//--- NOTIFICATIO INSERT
+						$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id,:link)");
+						$NOTY_insert->bindParam(":title", $title, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":link", $link, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":message", $message, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":user_id", $user_id, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":submitted_by", $submitted_by, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":time", $time, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":date", $date, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":role_id", $role_id, PDO::PARAM_STR);
+						$NOTY_insert->execute();	
+					//-- END
+						json_encode($fields);
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, $url);
+						curl_setopt($ch, CURLOPT_POST, true);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+						curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+						curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+						$result = curl_exec($ch);
+						curl_close($ch);
+				//--
+							
 				}
 				$success = array('status'=> true, "Error" => "Thank you remarks successfully submitted");
                 $this->response($this->json($success), 200);
  			}
  			else if($response_type==2)
 			{//Fetch 
-				$student_id=$this->_request['student_id'];
-				@$role_id=$this->_request['role_id'];
+$student_id=$this->_request['student_id'];
+ @$role_id=$this->_request['role_id'];
 				if(!empty($role_id) && $role_id !=5)
 				{			
 					$sql_fetch = $this->db->prepare("SELECT * FROM remarks where login_id = '".$student_id."'  order by `id` DESC");
@@ -3651,12 +3774,13 @@ if(!empty($row_gp ['pic'])){
 				{
 					$sql_fetch = $this->db->prepare("SELECT * FROM remarks where student_id = '".$student_id."'  order by `id` DESC");
 				}
+				 
  				$sql_fetch->execute();
 				 if ($sql_fetch->rowCount() != 0) {  
 				 	$x=0;   
 					while($row_gp = $sql_fetch->fetch(PDO::FETCH_ASSOC)){
 
-						    $student_id = $row_gp['student_id'];
+						     $student_id = $row_gp['student_id'];
 							$sql_std = $this->db->prepare("SELECT `name` FROM login WHERE id='".$student_id."'");
 							$sql_std->execute();
 							$std = $sql_std->fetch(PDO::FETCH_ASSOC);
@@ -3683,14 +3807,14 @@ $user_id=$row_gp['login_id'];
 								$teacher_image=$site_url.'faculty/'.$image;
 							}
 
+
 						foreach($row_gp as $key=>$valye)	
 						{
 							$string_insert[$x][$key]=$row_gp[$key];
 						}
 						$string_insert[$x]['class_name']=$class_name;
 						$string_insert[$x]['section_name']=$section_name;
-						$string_insert[$x]['student_name']=$std_name;
-						$string_insert[$x]['teacher_name']=$user_name;
+						$string_insert[$x]['student_name']=$std_name;$string_insert[$x]['teacher_name']=$user_name;
 						$string_insert[$x]['teacher_image']=$teacher_image;
 						$x++;
 					} 
@@ -4007,8 +4131,8 @@ $string_insert[$x]['time']=$time;
 							$subject_name=$stds['subject_name'];
 							$resultArray['subject']=$subject_name;
 
-						$resultArray['from']=$from_time;
-						$resultArray['to']=$to_time;
+						$resultArray['exam_time']=$from_time.'-'.$to_time;
+						//$resultArray['to']=$to_time;
 						$resultArray['exam_day']=$exam_day;
 						$resultArray['room_no']=$room_no;
 						$resultArray['exam_date']=date('d-m-Y',strtotime($exam_date));
@@ -4019,7 +4143,6 @@ $string_insert[$x]['time']=$time;
 		} 
 	}
 
-	 
 	public function NoteData() 
 	{
 		include_once("common/global.inc.php");
@@ -4057,6 +4180,7 @@ $string_insert[$x]['time']=$time;
 							$this->response($this->json($success), 200); 
 				}
 	}
+ 
 public function AchiveMentData() 
 	{
 		include_once("common/global.inc.php");
@@ -4099,82 +4223,6 @@ public function AchiveMentData()
 			$result = array("achivements"=> $string_insert);
 			$success = array('status'=> true, "Error" => "",'responce' => $result);
 			$this->response($this->json($success), 200);   	
-		}
-		else
-		{
-			$success = array('status'=> false, "Error" => "No data found",'responce' =>'');
-			$this->response($this->json($success), 200); 
-		}
-	}
-	public function SportMaster()
-	{
-		include_once("common/global.inc.php");
-        global $link;
-		if ($this->get_request_method() != "POST") 
-		{
-			$this->response('', 406);
-		}
-		$sql = $this->db->prepare("SELECT * FROM master_sports where `flag`=0 ");
-		$sql->execute();
-		if($sql->rowCount()>0)
-		{
-			$row_gps = $sql->fetchALL(PDO::FETCH_ASSOC);
-			$x=0;
-			foreach($row_gps as $key=>$valye)	
-			{
-				$image=$valye['image'];
-					
-				if(!empty($image)){
-					$FilePath = $site_url.$image;
-				}else{
-					$FilePath = "";
-				}
-				$string_insert[$key]=$row_gps[$key];
-				$string_insert['image']=$FilePath;
-				$x++;
-			}
-			$result = array("master_sports"=> $string_insert);
-			$success = array('status'=> true, "Error" => "",'responce' => $result);
-			$this->response($this->json($success), 200); 
-		}
-		else
-		{
-			$success = array('status'=> false, "Error" => "No data found",'responce' =>'');
-			$this->response($this->json($success), 200); 
-		}
-	}
-	public function AboutUs()
-	{
-		include_once("common/global.inc.php");
-        global $link;
-		if ($this->get_request_method() != "POST") 
-		{
-			$this->response('', 406);
-		}
-		$sql = $this->db->prepare("SELECT * FROM about_us where `flag`= 0 limit 1");
-		$sql->execute();
-		if($sql->rowCount()>0)
-		{
-			$row_gps = $sql->fetchALL(PDO::FETCH_ASSOC);
-			$x=0;
-			foreach($row_gps as $key=>$valye)	
-			{
-				$image=$valye['image'];
-				$SchoolAddress=$valye['SchoolAddress'];
-$Schoolpolicy=$valye['Schoolpolicy'];
-$SchoolContact=$valye['SchoolContact'];
- 
- 
-				if(!empty($image)){
-					$FilePath = $site_url.$image;
-				}else{
-					$FilePath = "";
-				}
-				 
-			}
-			$result=array('SchoolAddress'=>$SchoolAddress,'Schoolpolicy'=>$Schoolpolicy,'SchoolContact'=>$SchoolContact,'image'=>$FilePath) ;
-			$success = array('status'=> true, "Error" => "","about_us"=> $result);
-			$this->response($this->json($success), 200); 
 		}
 		else
 		{
@@ -4280,8 +4328,6 @@ $SchoolContact=$valye['SchoolContact'];
 					$Tname=$stds['user_name'];
 				$max_marks=$valye['max_marks'];
 				$obtained_marks=$valye['obtained_marks'];
-					
- 				 
 				$string_insert[$x]['student_name']=$name;
 				$string_insert[$x]['marks']=$obtained_marks.'/'.$max_marks;
 				$string_insert[$x]['max_marks']=$max_marks;
@@ -4290,7 +4336,7 @@ $SchoolContact=$valye['SchoolContact'];
 				$string_insert[$x]['student_id']=$student_id;
 				$string_insert[$x]['exam_type']=$exam_type;
 				$string_insert[$x]['teacher_name']=$Tname;
-$string_insert[$x]['test_date']=$valye['test_date'];
+				$string_insert[$x]['test_date']=$valye['test_date'];
  				  
 			 $x++;
 			 }
@@ -4366,10 +4412,76 @@ $string_insert[$x]['test_date']=$valye['test_date'];
 													$Marks=$marks[$i];
 												
 													$note_sql = $this->db->prepare("insert into `student_marks` set `student_id` = '$StudentID' , `class_id` = '$class_id' , `section_id` = '$section_id' , `subject_id` = '$subject_id' , `max_marks` = '$max_marks' , `obtained_marks` = '$Marks' , `teacher_id` = '$teacher_id' , `exam_type_id` = '$exam_term_id' , `test_date` = '$test_date'");
-													$note_sql->execute();			
+													$note_sql->execute();
+// notification
+				$insert_id = $this->db->lastInsertId();
+ 				//--
+					$sql_stds = $this->db->prepare("SELECT `subject_name` FROM master_subject WHERE id='".$subject_id."'");
+					$sql_stds->execute();
+					$stds = $sql_stds->fetch(PDO::FETCH_ASSOC);
+					$subject_name=$stds['subject_name'];
+					
+ 					$std_nm = $this->db->prepare("SELECT `device_token`,`notification_key`,`role_id` FROM `login` where id='".$StudentID."' && `device_token` !='' ");
+					$std_nm->execute();
+					$ftc_nm= $std_nm->fetch(PDO::FETCH_ASSOC);
+					$device_token = $ftc_nm['device_token'];
+					$notification_key = $ftc_nm['notification_key'];
+					$role_id = $ftc_nm['role_id'];
+					
+					$message='Class test marks submitted';
+					$title='Banned';
+					$submitted_by=$user_id;
+					$user_id=$student_id;
+					$date=date("M d Y");
+					$time=date("h:i A");
+					
+ 					$msg = array
+					(
+						'title' => $subject_name,
+						'message' 	=> $message,
+						'button_text'	=> 'View',
+						'link'	=> 'notice://classtest?id='.$insert_id,
+						'notification_id'	=> $insert_id,
+					);
+					$url = 'https://fcm.googleapis.com/fcm/send';
+					$fields = array
+					(
+						'registration_ids' 	=> array($device_token),
+						'data'			=> $msg
+					);
+					$headers = array
+					(
+						'Authorization: key=' .$notification_key,
+						'Content-Type: application/json'
+					);
+					$link='notice://classtest?id='.$insert_id;
+					//--- NOTIFICATIO INSERT
+						$NOTY_insert = $this->db->prepare("INSERT into notification(title,message,user_id,submitted_by,date,time,role_id,link)VALUES(:title,:message,:user_id,:submitted_by,:date,:time,:role_id,:link)");
+						$NOTY_insert->bindParam(":title", $title, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":link", $link, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":message", $message, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":user_id", $user_id, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":submitted_by", $submitted_by, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":time", $time, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":date", $date, PDO::PARAM_STR);
+						$NOTY_insert->bindParam(":role_id", $role_id, PDO::PARAM_STR);
+						$NOTY_insert->execute();	
+					//-- END
+						json_encode($fields);
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, $url);
+						curl_setopt($ch, CURLOPT_POST, true);
+						curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+						curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+						curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+						$result = curl_exec($ch);
+						curl_close($ch);
+				//--
+							
 												}
-												//$Rarray=array('class_id' => $class_id , 'section_id' => $section_id , 'subject_id' => $subject_id , 'max_marks' => $max_marks , 'teacher_id' =>$teacher_id , 'term_name' => $term_name , 'test_date' => $test_date, 'student_id' => $student_id , 'marks' => $marks);
-												//$success = array('status'=> true, "Error" => "Data Successfully Submitted",'responce' => $Rarray);
+												
 												$success = array('status'=> true, "Error" => "Data Successfully Submitted",'responce' => '');
 												$this->response($this->json($success), 200);   	
 											}
@@ -4945,7 +5057,7 @@ public function ChangePassword()
 				$this->response($this->json($error), 200);
 			}
 	}
-	//-- Banned Student
+   //-- Banned Student
 	public function BannedStudents() 
 	{
 		global $link;
@@ -5111,8 +5223,11 @@ $string_insert[$x]['teacher_name']=$Tuser_name;
 			$field=$this->_request['field'];/// YMD
 			$description=$this->_request['description'];/// YMD
 			$remarks=$this->_request['remarks'];
- 			 
-			$sql_insert = $this->db->prepare("INSERT into work_report(user_id,field,description,remarks)VALUES(:user_id,:field,:description,:remarks)");
+			
+			$date=$this->_request['date'];
+			$sql_insert = $this->db->prepare("INSERT into work_report(user_id,field,description,remarks,date)VALUES(:user_id,:field,:description,:remarks,:date)");
+			$sql_insert->bindParam(":date", $date, PDO::PARAM_STR);
+			
 			$sql_insert->bindParam(":user_id", $user_id, PDO::PARAM_STR);
 			$sql_insert->bindParam(":field", $field, PDO::PARAM_STR);
 			$sql_insert->bindParam(":description", $description, PDO::PARAM_STR);

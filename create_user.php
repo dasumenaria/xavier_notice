@@ -40,7 +40,7 @@ if(isset($_POST['submit']))
 		}
 		$notification_key="AAAAJs4r62Q:APA91bHtzaHry7Y63No5sTrsD09dl7Bu5Xj3ZuVxmY614VKvtA6a4eOKz6sydOzWZDAfLgAbqld1OkiuGA7o-ex_hnEUDNg2CWNZOUbkJDMYv5kJ-Q6816vOrtLAkDvZP3U_WizaqUql";
 		$sql="insert into faculty_login(name,user_name,role_id,password,mobile_no,address,image,curent_date,class_id,section_id,notification_key)
-		values('$name','$username','$role_id','$password','$mobile_no','$address','$item_image','$date','$class_id','$section_id',$notification_key)";
+		values('$name','$username','$role_id','$password','$mobile_no','$address','$item_image','$date','$class_id','$section_id','$notification_key')";
 		$r=mysql_query($sql);
 	$message="User Added Successfully";
 	}

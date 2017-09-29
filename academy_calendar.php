@@ -17,6 +17,7 @@ if(isset($_POST['submit']))
 	$sql="insert into acedmic_calendar(category_id,description,date,tag,curent_date,user_id)values('$type','$name','$date','$x_d','$curent_date','$user_id')";
 	$r=mysql_query($sql);
 	$message="Calendar Added Successfully ";
+	$eventid=mysql_insert_id();
 }
 ?> 
 <html>
@@ -92,13 +93,29 @@ if(isset($_POST['submit']))
 </body>
 
 <?php footer();?>
+<script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+<script>
+<?php if($eventid>0){ ?>
+var update_id = <?php echo $eventid; ?>;
+alert(update_id);
+		$.ajax({
+			url: "notification_page.php?function_name=create_academy_notify&id="+update_id,
+			type: "POST",
+			success: function(data)
+			{  alert(data); 
+ 			}
+		});
+<?php } ?>
+ 
+</script>
 <script>
 		var myVar=setInterval(function(){myTimerr()},4000);
 		function myTimerr() 
 		{
 		$("#success").hide();
 		} 
-		</script>
+</script>
+		
 <?php scripts();?>
 
 </html>
